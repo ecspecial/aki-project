@@ -2,10 +2,10 @@ import { db } from "../../config/dbConfig.js";
 
 class organisationController {
     async createOrganisation(req, res) {
-        const { full_name, email, password, role, position, legal_entity_name, inn } = req.body;
+        const { full_name, email, password, role, user_position, legal_entity_name, inn } = req.body;
         const checkQuery = `
             SELECT * FROM users
-            WHERE email = $2;
+            WHERE email = $1;
         `;
         const insertQuery = `
             INSERT INTO users (full_name, email, password, role)
@@ -13,7 +13,7 @@ class organisationController {
             RETURNING id;
         `;
         const insertOrganisationQuery = `
-            INSERT INTO organisations (user_id, position, legal_entity_name, inn)
+            INSERT INTO organisations (user_id, user_position, legal_entity_name, inn)
             VALUES ($1, $2, $3, $4)
             RETURNING *;
         `;
@@ -24,7 +24,7 @@ class organisationController {
             }
             const newUser = await db.query(insertQuery, [full_name, email, password, role]);
             const userId = newUser.rows[0].id;
-            const newOrganisation = await db.query(insertOrganisationQuery, [userId, position, legal_entity_name, inn]);
+            const newOrganisation = await db.query(insertOrganisationQuery, [userId, user_position, legal_entity_name, inn]);
             res.json(newOrganisation.rows[0]);
         } catch (error) {
             console.error("Error creating organisation:", error);
