@@ -78,3 +78,13 @@ CREATE TABLE bookings (
 
 -- Подключаеся к базе данных
 psql -h localhost -U postgres -d akidb
+
+-- Настройка PostgreSQL на ECS Cloud
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+
+-- Открыть PostgreSQL под пользователем postgres
+sudo su - postgres
+
+-- Выходим из PostgreSQL
+\q exit
