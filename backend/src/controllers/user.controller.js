@@ -5,7 +5,7 @@ class userController {
         const { full_name, email, password, role } = req.body;
         const checkQuery = `
           SELECT * FROM users
-          WHERE email = $2;
+          WHERE email = $1;
         `;
         const insertQuery = `
           INSERT INTO users (full_name, email, password, role)
@@ -17,7 +17,7 @@ class userController {
           if (checkUser.rows.length > 0) {
             return res.status(409).json({ error: "User already exists" });
           }
-          const newUser = await db.query(insertQuery, [email, password, role]);
+          const newUser = await db.query(insertQuery, [full_name, email, password, role]);
           res.json(newUser.rows[0]);
         } catch (error) {
           console.error("Error creating user:", error);
@@ -58,7 +58,7 @@ class userController {
 
     async updateUser(req, res) {
         const { id } = req.params;
-        const { email, password, role } = req.body;
+        const { full_name, email, password, role } = req.body;
         const query = `
             UPDATE users
             SET full_name = $1, email = $2, password = $3, role = $4, updated_at = CURRENT_TIMESTAMP
