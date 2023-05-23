@@ -61,7 +61,7 @@ class userController {
         const { email, password, role } = req.body;
         const query = `
             UPDATE users
-            SET email = $1, password = $2, role = $3
+            SET email = $1, password = $2, role = $3, updated_at = CURRENT_TIMESTAMP
             WHERE id = $4
             RETURNING *;
         `;
