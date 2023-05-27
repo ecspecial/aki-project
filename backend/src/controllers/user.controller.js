@@ -1,5 +1,8 @@
 import { db } from "../../config/dbConfig.js";
-import fs from 'fs-extra';
+import fs from "fs-extra";
+import * as config from "../../config/jwtConfig.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class userController {
     async createUser(req, res) {
@@ -13,17 +16,69 @@ class userController {
           VALUES ($1, $2, $3, $4)
           RETURNING *;
         `;
+      
         try {
+          await db.query('BEGIN'); // Start transaction
+      
           const checkUser = await db.query(checkQuery, [email]);
           if (checkUser.rows.length > 0) {
             return res.status(409).json({ error: "User already exists" });
           }
-          const newUser = await db.query(insertQuery, [full_name, email, password, role]);
-          res.json(newUser.rows[0]);
+      
+          // Hash the password
+          const hashedPassword = await bcrypt.hash(password, config.bcryptSaltRounds);
+      
+          const newUser = await db.query(insertQuery, [full_name, email, hashedPassword, role]);
+      
+          // Generate and sign a JWT token
+          const token = jwt.sign({ userId: newUser.rows[0].id }, config.jwtSecret, {
+            expiresIn: config.jwtExpiresIn,
+            algorithm: config.jwtAlgorithm
+          });
+      
+          await db.query('COMMIT'); // Commit transaction
+      
+          res.json({ user: newUser.rows[0], token });
         } catch (error) {
+          await db.query('ROLLBACK'); // Rollback transaction
           console.error("Error creating user:", error);
           res.status(500).json({ error: "Failed to create user" });
         }
+      }
+
+    async login(req, res) {
+        const { email, password } = req.body;
+        const query = `
+            SELECT * FROM users
+            WHERE email = $1;
+        `;
+
+        try {
+            const user = await db.query(query, [email]);
+      
+            if (user.rows.length === 0) {
+              return res.status(401).json({ error: "Invalid email or password" });
+            }
+      
+            const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
+      
+            if (!passwordMatch) {
+              return res.status(401).json({ error: "Invalid email or password" });
+            }
+      
+            // Generate and sign a JWT token
+            const token = jwt.sign({ userId: user.rows[0].id }, config.jwtSecret, {
+              expiresIn: config.jwtExpiresIn,
+              algorithm: config.jwtAlgorithm
+            });
+      
+            res.json({ user: user.rows[0], token });
+        } catch (error) {
+            // Handle the error appropriately
+            console.error(error);
+            res.status(500).json({ error: "Internal server error when logging" });
+        }
+
     }
 
     async getUsers(req, res) {
