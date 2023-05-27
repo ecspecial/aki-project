@@ -1,7 +1,11 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import userRouter from "./src/routes/user.routes.js";
 import organisationRouter from "./src/routes/organisation.routes.js";
 import spaceRouter from "./src/routes/space.routes.js";
+import { jwtSecret } from "./config/jwtConfig.js";
+import jwtAuthMiddleware from "./src/middlewares/jwtAuthMiddleware.js";
+import userController from "./src/controllers/user.controller.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,6 +16,7 @@ app.use(express.json());
 
 app.use('/images',express.static('images'));
 
+// Protected routes (require authentication)
 app.use('/api', userRouter);
 app.use('/api', organisationRouter);
 app.use('/api', spaceRouter);
