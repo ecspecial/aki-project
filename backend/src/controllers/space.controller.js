@@ -1,4 +1,4 @@
-import { db } from "../../config/dbConfig.js";
+import { db } from '../../config/dbConfig.js';
 import fs from 'fs-extra';
 
 class spaceController {
@@ -16,8 +16,8 @@ class spaceController {
             const newSpace = await db.query(insertQuery, [user_id, space_name, industry, description, address, operating_hours, price]);
             res.json(newSpace.rows[0]);
           } catch (error) {
-            console.error("Error creating space:", error);
-            res.status(500).json({ error: "Failed to create space" });
+            console.error('Error creating space:', error);
+            res.status(500).json({ error: 'Failed to create space' });
           }
     }
 
@@ -32,12 +32,12 @@ class spaceController {
         try {
             const space = await db.query(selectQuery, [id, spaceId]);
             if (space.rows.length === 0) {
-                return res.status(404).json({ error: "Space not found" });
+                return res.status(404).json({ error: 'Space not found' });
             }
             res.json(space.rows[0]);
         } catch (error) {
-            console.error("Error getting space:", error);
-            res.status(500).json({ error: "Failed to get space" });
+            console.error('Error getting space:', error);
+            res.status(500).json({ error: 'Failed to get space' });
         }
     }
 
@@ -53,8 +53,8 @@ class spaceController {
             const spaces = await db.query(selectQuery, [id]);
             res.json(spaces.rows);
         } catch (error) {
-            console.error("Error getting spaces:", error);
-            res.status(500).json({ error: "Failed to get spaces" });
+            console.error('Error getting spaces:', error);
+            res.status(500).json({ error: 'Failed to get spaces' });
         }
     }
 
@@ -67,8 +67,8 @@ class spaceController {
             const spaces = await db.query(selectQuery);
             res.json(spaces.rows);
         } catch (error) {
-            console.error("Error getting spaces:", error);
-            res.status(500).json({ error: "Failed to get spaces" });
+            console.error('Error getting spaces:', error);
+            res.status(500).json({ error: 'Failed to get spaces' });
         }
       }
 
@@ -86,12 +86,12 @@ class spaceController {
         try {
             const updatedSpace = await db.query(updateQuery, [space_name, industry, description, address, operating_hours, price, id, spaceId]);
             if (updatedSpace.rows.length === 0) {
-                return res.status(404).json({ error: "Space not found" });
+                return res.status(404).json({ error: 'Space not found' });
             }
             res.json(updatedSpace.rows[0]);
         } catch (error) {
-            console.error("Error updating space:", error);
-            res.status(500).json({ error: "Failed to update space" });
+            console.error('Error updating space:', error);
+            res.status(500).json({ error: 'Failed to update space' });
         }
     }
 
@@ -124,8 +124,8 @@ class spaceController {
             });
         } catch (error) {
             await db.query('ROLLBACK'); // Rollback transaction
-            console.error("Error uploading space images:", error);
-            res.status(500).json({ error: "Failed to upload space images" });
+            console.error('Error uploading space images:', error);
+            res.status(500).json({ error: 'Failed to upload space images' });
         }
     }
     
@@ -150,14 +150,14 @@ class spaceController {
             const deletedSpace = await db.query(deleteQuery, [id, spaceId]);
             if (deletedSpace.rows.length === 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
-                return res.status(404).json({ error: "Space not found" });
+                return res.status(404).json({ error: 'Space not found' });
             }
             await db.query('COMMIT'); // Commit transaction
-            res.json({ message: "User data deleted successfully" });
+            res.json({ message: 'User data deleted successfully' });
         } catch (error) {
             await db.query('ROLLBACK'); // Rollback transaction
-            console.error("Error deleting space:", error);
-            res.status(500).json({ error: "Failed to delete space" });
+            console.error('Error deleting space:', error);
+            res.status(500).json({ error: 'Failed to delete space' });
         }
     }
 

@@ -1,8 +1,8 @@
-import { db } from "../../config/dbConfig.js";
-import fs from "fs-extra";
-import * as config from "../../config/jwtConfig.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { db } from '../../config/dbConfig.js';
+import fs from 'fs-extra';
+import * as config from '../../config/jwtConfig.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 class userController {
     async createUser(req, res) {
@@ -22,7 +22,7 @@ class userController {
       
           const checkUser = await db.query(checkQuery, [email]);
           if (checkUser.rows.length > 0) {
-            return res.status(409).json({ error: "User already exists" });
+            return res.status(409).json({ error: 'User already exists' });
           }
       
           // Hash the password
@@ -41,8 +41,8 @@ class userController {
           res.json({ user: newUser.rows[0], token });
         } catch (error) {
           await db.query('ROLLBACK'); // Rollback transaction
-          console.error("Error creating user:", error);
-          res.status(500).json({ error: "Failed to create user" });
+          console.error('Error creating user:', error);
+          res.status(500).json({ error: 'Failed to create user' });
         }
       }
 
@@ -57,13 +57,13 @@ class userController {
             const user = await db.query(query, [email]);
       
             if (user.rows.length === 0) {
-              return res.status(401).json({ error: "Invalid email or password" });
+              return res.status(401).json({ error: 'Invalid email or password' });
             }
       
             const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
       
             if (!passwordMatch) {
-              return res.status(401).json({ error: "Invalid email or password" });
+              return res.status(401).json({ error: 'Invalid email or password' });
             }
       
             // Generate and sign a JWT token
@@ -76,7 +76,7 @@ class userController {
         } catch (error) {
             // Handle the error appropriately
             console.error(error);
-            res.status(500).json({ error: "Internal server error when logging" });
+            res.status(500).json({ error: 'Internal server error when logging' });
         }
 
     }
@@ -89,8 +89,8 @@ class userController {
             const users = await db.query(query);
             res.json(users.rows);
         } catch (error) {
-            console.error("Error retrieving users:", error);
-            res.status(500).json({ error: "Failed to retrieve users" });
+            console.error('Error retrieving users:', error);
+            res.status(500).json({ error: 'Failed to retrieve users' });
         }
     }
 
@@ -102,13 +102,13 @@ class userController {
         try {
             const user = await db.query(query, [id]);
             if (user.rows.length === 0) {
-                res.status(404).json({ error: "User not found" });
+                res.status(404).json({ error: 'User not found' });
             } else {
                 res.json(user.rows[0]);
             }
         } catch (error) {
-            console.error("Error retrieving user:", error);
-            res.status(500).json({ error: "Failed to retrieve user" });
+            console.error('Error retrieving user:', error);
+            res.status(500).json({ error: 'Failed to retrieve user' });
         }
     }
 
@@ -127,18 +127,18 @@ class userController {
             `;
             const checkEmail = await db.query(checkEmailQuery, [email, id]);
             if (checkEmail.rows.length > 0) {
-                return res.status(409).json({ error: "Email already exists" });
+                return res.status(409).json({ error: 'Email already exists' });
             }
             
             const updatedUser = await db.query(query, [full_name, email, password, role, id]);
             if (updatedUser.rows.length === 0) {
-                res.status(404).json({ error: "User not found" });
+                res.status(404).json({ error: 'User not found' });
             } else {
                 res.json(updatedUser.rows[0]);
             }
         } catch (error) {
-            console.error("Error updating user:", error);
-            res.status(500).json({ error: "Failed to update user" });
+            console.error('Error updating user:', error);
+            res.status(500).json({ error: 'Failed to update user' });
         }
     }
 
@@ -192,11 +192,11 @@ class userController {
     
             await db.query('COMMIT'); // Commit transaction
     
-            res.json({ message: "User data deleted successfully" });
+            res.json({ message: 'User data deleted successfully' });
         } catch (error) {
             await db.query('ROLLBACK'); // Rollback transaction
-            console.error("Error deleting user data:", error);
-            res.status(500).json({ error: "Failed to delete user data" });
+            console.error('Error deleting user data:', error);
+            res.status(500).json({ error: 'Failed to delete user data' });
         }
     }
 

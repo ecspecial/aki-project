@@ -1,6 +1,6 @@
-import { Router } from "express";
+import { Router } from 'express';
 const router = new Router();
-import organisationController from "../controllers/organisation.controller.js";
+import organisationController from '../controllers/organisation.controller.js';
 
 router.post('/organisation', organisationController.createOrganisation);
 router.get('/organisation/:id', organisationController.getOneOrganisation);

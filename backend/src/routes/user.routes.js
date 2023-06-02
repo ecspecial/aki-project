@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Router } from 'express';
 const router = new Router();
-import userController from "../controllers/user.controller.js";
-import { uploadProfilePicture } from "../middlewares/photoUpload.js";
-import jwtAuthMiddleware from "../middlewares/jwtAuthMiddleware.js";
+import userController from '../controllers/user.controller.js';
+import { uploadProfilePicture } from '../middlewares/photoUpload.js';
+import jwtAuthMiddleware from '../middlewares/jwtAuthMiddleware.js';
 
 router.post('/user', userController.createUser);
 router.post('/user/login', userController.login);

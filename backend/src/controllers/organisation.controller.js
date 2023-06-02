@@ -1,4 +1,4 @@
-import { db } from "../../config/dbConfig.js";
+import { db } from '../../config/dbConfig.js';
 
 class organisationController {
     async createOrganisation(req, res) {
@@ -28,18 +28,18 @@ class organisationController {
             const checkUser = await db.query(checkQuery, [email]);
             if (checkUser.rows.length > 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
-                return res.status(409).json({ error: "User with this email already exists" });
+                return res.status(409).json({ error: 'User with this email already exists' });
             }
         
             const checkOrganisation = await db.query(checkOrganisationQuery, [legal_entity_name, inn]);
             if (checkOrganisation.rows.length > 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
                 const existingOrganisation = checkOrganisation.rows[0];
-                let errorMessage = "Organisation already exists";
+                let errorMessage = 'Organisation already exists';
                 if (existingOrganisation.legal_entity_name === legal_entity_name) {
-                    errorMessage = "Legal entity name already exists";
+                    errorMessage = 'Legal entity name already exists';
                 } else if (existingOrganisation.inn === inn) {
-                    errorMessage = "INN already exists";
+                    errorMessage = 'INN already exists';
                 }
                 return res.status(409).json({ error: errorMessage });
             }
@@ -59,9 +59,9 @@ class organisationController {
             await db.query('COMMIT'); // Commit transaction
             res.json(user);
         } catch (error) {
-            console.error("Error creating organisation:", error);
+            console.error('Error creating organisation:', error);
             await db.query('ROLLBACK'); // Rollback transaction
-            res.status(500).json({ error: "Failed to create organisation" });
+            res.status(500).json({ error: 'Failed to create organisation' });
         }
     }
 
@@ -104,17 +104,17 @@ class organisationController {
         
             if (existingEmail.rows.length > 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
-                return res.status(400).json({ error: "Email already exists" });
+                return res.status(400).json({ error: 'Email already exists' });
             }
         
             if (existingLegalEntityName.rows.length > 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
-                return res.status(400).json({ error: "Legal entity name already exists" });
+                return res.status(400).json({ error: 'Legal entity name already exists' });
             }
         
             if (existingInn.rows.length > 0) {
                 await db.query('ROLLBACK'); // Rollback transaction
-                return res.status(400).json({ error: "INN already exists" });
+                return res.status(400).json({ error: 'INN already exists' });
             }
         
             await db.query(updateUserDataQuery, [full_name, email, password, id]);
@@ -124,11 +124,11 @@ class organisationController {
             await db.query(updateVerifiedStatusQuery, [verified, id]);
         
             await db.query('COMMIT'); // Commit transaction
-            res.json({ message: "Organisation updated successfully" });
+            res.json({ message: 'Organisation updated successfully' });
         } catch (error) {
-            console.error("Error updating organisation:", error);
+            console.error('Error updating organisation:', error);
             await db.query('ROLLBACK'); // Rollback transaction
-            res.status(500).json({ error: "Failed to update organisation" });
+            res.status(500).json({ error: 'Failed to update organisation' });
         }
     }
 
@@ -147,13 +147,13 @@ class organisationController {
         try {
             const result = await db.query(query, [id]);
             if (result.rows.length === 0) {
-                return res.status(404).json({ error: "Organisation not found" });
+                return res.status(404).json({ error: 'Organisation not found' });
             }
             const user = result.rows[0];
             res.json(user);
         } catch (error) {
-            console.error("Error retrieving organisation:", error);
-            res.status(500).json({ error: "Failed to retrieve organisation" });
+            console.error('Error retrieving organisation:', error);
+            res.status(500).json({ error: 'Failed to retrieve organisation' });
         }
     }
 
@@ -170,13 +170,13 @@ class organisationController {
         try {
             const result = await db.query(query);
             if (result.rows.length === 0) {
-                return res.status(404).json({ error: "No organisations found" });
+                return res.status(404).json({ error: 'No organisations found' });
             }
             const organisations = result.rows;
             res.json(organisations);
         } catch (error) {
-            console.error("Error retrieving organisations:", error);
-            res.status(500).json({ error: "Failed to retrieve organisations" });
+            console.error('Error retrieving organisations:', error);
+            res.status(500).json({ error: 'Failed to retrieve organisations' });
         }
     }
     

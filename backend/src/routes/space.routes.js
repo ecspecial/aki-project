@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { Router } from 'express';
 const router = new Router();
-import spaceController from "../controllers/space.controller.js";
-import { uploadSpacePictures } from "../middlewares/photoUpload.js";
+import spaceController from '../controllers/space.controller.js';
+import { uploadSpacePictures } from '../middlewares/photoUpload.js';
 
 router.post('/organisation/:id/spaces', spaceController.createSpace);
 router.get('/organisation/:id/space/:spaceId', spaceController.getOneOrganisationSpace);
