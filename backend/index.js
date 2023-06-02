@@ -1,18 +1,21 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import userRouter from "./src/routes/user.routes.js";
-import organisationRouter from "./src/routes/organisation.routes.js";
-import spaceRouter from "./src/routes/space.routes.js";
-import { jwtSecret } from "./config/jwtConfig.js";
-import jwtAuthMiddleware from "./src/middlewares/jwtAuthMiddleware.js";
-import userController from "./src/controllers/user.controller.js";
-import dotenv from "dotenv";
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import userRouter from './src/routes/user.routes.js';
+import organisationRouter from './src/routes/organisation.routes.js';
+import spaceRouter from './src/routes/space.routes.js';
+import { jwtSecret } from './config/jwtConfig.js';
+import jwtAuthMiddleware from './src/middlewares/jwtAuthMiddleware.js';
+import userController from './src/controllers/user.controller.js';
+import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const port = process.env.PORT || 8080;
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 app.use('/images',express.static('images'));
 
